@@ -1,6 +1,6 @@
 // In this file we define the AuthService class and create an object of it
 
-import conf from "../conf.js";
+import conf from "../conf/conf.js";
 import { Client, Account, ID } from "appwrite";
 
 // AuthService class
