@@ -138,7 +138,8 @@ export class Service {
     }
   }
 
-  // Get file preview : No need for async await here (Documentation also didn't used promise/async-await)
+  // Get file preview : Returns a url
+  // No need for async await here (Documentation also didn't used promise/async-await)
   getFilePreview(fileId) {
     return this.bucket.getFilePreview(conf.appwriteBucketId, fileId);
   }
