@@ -1,42 +1,40 @@
 import React, { useState } from "react";
+import authService from "../appwrite/auth";
 import { Link, useNavigate } from "react-router-dom";
-import { login as authLogin } from "../store/authSlice";
+import { login } from "../store/authSlice";
 import { Button, Input, Logo } from "./index";
 import { useDispatch } from "react-redux";
-import authService from "../appwrite/auth";
 import { useForm } from "react-hook-form";
 
-function Login() {
+function Signup() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
-  const [error, setError] = useState(""); // State to store error message
+  const [error, setError] = useState("");
 
-  //  Method to handle form submission
-  const login = async (data) => {
-    setError(""); // Firstly empty out the error state to remove any previous error
-
+  const create = async (data) => {
+    setError("");
     try {
-      const session = await authService.login(data); // Call the login method from authService
-      // If session is available then dispatch the login action
-      if (session) {
-        const userData = await authService.getCurrentUser(); // Get the current user data
+      // Call the createAccount method from authService
+      const userData = await authService.createAccount(data);
+      // If userData is available
+      if (userData) {
+        // Get the current user data
+        const userData = await authService.getCurrentUser();
         // If user data is available then dispatch the login action
         if (userData) {
-          dispatch(authLogin(userData)); // Dispatch the login action to the store
-          // After login, navigate to the home
-          navigate("/");
+          dispatch(login(userData));
+          navigate("/"); // After login, navigate to the home
         }
       }
     } catch (error) {
-      setError(error.message); // Set the error message
+      setError(error.message);
     }
   };
-
   return (
-    <div className="flex items-center justify-center w-full">
+    <div className="flex items-center justify-center">
       <div
-        className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}
+        className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border-black/10`}
       >
         <div className="mb-2 flex justify-center">
           <span className="inline-block w-full max-w-[100px]">
@@ -44,26 +42,29 @@ function Login() {
           </span>
         </div>
         <h2 className="text-center text-2xl font-bold leading-tight">
-          Sign in to your account
+          Sign up to create your account
         </h2>
         <p className="mt-2 text-center text-base text-black/60">
-          Don&apos;t have an account?&nbsp;
+          Already have an account ?&nbsp;
           <Link
             to="/signup"
             className="font-medium text-primary transition-all duration-200 hover:underline"
           >
-            Sign Up
+            Sign In
           </Link>
         </p>
-        {
-          // Error message
-          error && <p className="text-red-600 mt-8 text-center">{error}</p>
-        }
+        {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
 
         {/* Form */}
-        <form onSubmit={handleSubmit(login)} className="mt-8">
+        <form onSubmit={handleSubmit(create)}>
           <div className="space-y-5">
-            {/* Custom Input: Email */}
+            <Input
+              label="Full Name: "
+              placeholder="Enter your full name"
+              {...register("name", {
+                required: true,
+              })}
+            />
             <Input
               label="Email: "
               placeholder="Enter your email"
@@ -79,7 +80,6 @@ function Login() {
                 },
               })}
             />
-            {/* Password */}
             <Input
               label="Password: "
               placeholder="Enter your password"
@@ -88,9 +88,8 @@ function Login() {
                 required: true,
               })}
             />
-            {/*Button */}
             <Button type="submit" className="w-full">
-              Sign in
+              Create Account
             </Button>
           </div>
         </form>
@@ -99,4 +98,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Signup;
