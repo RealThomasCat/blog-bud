@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 export default function Protected({ children, authentication = true }) {
   // Assume authentication is true by default
   const navigate = useNavigate();
-  cosnt[(useLoader, setLoader)] = useState(true);
+  const [useLoader, setLoader] = useState(true);
 
   // Ask the store if user is logged in or not
   const authStatus = useSelector((state) => state.auth.status);
